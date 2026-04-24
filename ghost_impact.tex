@@ -1,0 +1,131 @@
+\section{Determining Ghost Impact \label{sec:ghost_impact}}
+This section describes the steps used to estimate the ghost-impacted area for an individual LSSTCam visit. This process was repeated for each exposure in the Rubin commissioning to derive a quantitative assessment of the ghost-impacted area in the science verification surveys.
+
+\subsection{Bright Stars}
+For each Rubin exposure, we retrieve all bright stars from the Yale Bright Star Catalog \citep{Hoffleit1991} within 1.9 deg of the Rubin boresight. We transform the $V$-band magnitudes of these bright stars in the LSST bands by first transforming into the DES system following the procedure described in Appendix B of \cite{2021ApJS..255...20A}. We then follow the approach of \cite{DMTN-277} to transform from the DES system to predicted LSST magnitudes. 
+
+In order to accomplish the first step in this task, we use the transformation equations listed in Eq.~\ref{eq:ybsc_to_des} to transform the magnitudes of the stars using the $V$ magnitude and the $B-V$ colour to DES magnitudes. These transformations are valid for -0.2 $<B-V\leq $ 2.2. For stars that do not have $B-V$ colour or stars whose colours lie outside of the range above (113 out of 8673 stars), we use the $V$ band magnitude in place of transformed LSST magnitudes for the simulations.
+
+\begin{equation}
+\label{eq:ybsc_to_des}
+    \begin{aligned}
+        g_{DES} = V + 0.496 (B-V) -0.07  \\
+        r_{DES} = V  -0.543 (B-V) + 0.128  \\
+        i_{DES} = V -1.04 (B-V) +0.312 \\
+        z_{DES} = V -1.302 (B-V) +0.417 \\
+        Y_{DES} = V -1.416 (B-V) +0.504 
+    \end{aligned}
+\end{equation}
+
+To transform from DES to LSST, we use transformation equations derived in the construction of The Monster \citep{DMTN-277}. 
+We are unable to use this sequence of transformations to generate LSST {\it u} band magnitudes because we did not have transformation equations from the DECam {\it u} to LSSTCam {\it u}.  In this case, we use the $V$ magnitudes instead of the transformed LSST {\it u} magnitudes. 
+We use the $V$ band magnitude for all star magnitudes that we were unable to transform to LSST magnitudes.
+
+\subsection{Simulations \label{sec:sims}}
+In this section we describe the use of the \texttt{Batoid} Python package \citep{Batoid} to generate simulated optical ghosts from bright stars in a particular visit. 
+
+\begin{figure}[h]
+    \centering
+\includegraphics[width=0.4\textwidth]{figures/ghost_model_flowchart.png}
+    \caption{Flowchart showing the procedure used to generate optical ghost templates and surface brightness estimates.} 
+    \label{fig:ghost_model_flowchart}
+\end{figure}
+\subsubsection{Pipeline \label{sec:pipeline}}
+Figure~\ref{fig:ghost_model_flowchart} shows a flowchart of the pipeline used to generate morphology, flux, and surface brightnesses of ghosts. 
+The optical reflectances of the filters and lenses in the simulation were set to the values produced by the systems engineering simulations\footnote{\url{https://github.com/lsst-pst/syseng_throughputs/blob/main/notebooks/Components.ipynb}}. The bright stars were initialized into the simulation using the \texttt{preliminary\_visit\_image.wcs} object. The rays were then propagated through the full optical model. The flux of each ghost was converted from arbitrary flux units in \texttt{Batoid} to instrumental flux using Eq.~\ref{eq:batoid_flux_to_instflux}, where $f_i$ is the instrumental flux of a particular ghost, $\phi_{tot}$ is the total flux of all ghosts in arbitrary flux units, $\phi_\star$ is the flux of the star in arbitrary flux units and $f_\star$ is the instrumental flux of the star. $f_\star$ is calculated by converting the magnitude of the star in the LSST band to instrumental fluxes using the \texttt{preliminary\_visit\_image.photoCalib} object. 
+\begin{equation}
+\label{eq:batoid_flux_to_instflux}
+    f_{i} = \frac{\phi_i}{\phi_{tot}+\phi_\star} f_\star
+\end{equation}
+Figure~\ref{fig:stacked_ghosts} shows the stacked optical ghosts produced by the simulation for visit 2025110500406.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/2025110500406_ghosts.png}
+    \caption{Stacked simulated ghosts produced by a \texttt{Batoid} simulation using the procedure delineated in Section~\ref{sec:pipeline}.} 
+    \label{fig:stacked_ghosts}
+\end{figure}
+
+
+\subsubsection{Ghost Nomenclature \& Morphology \label{sec:nomenclature}}
+In this technote, ghosts are labeled by the two optical elements that created them, ordered by the sequence of reflections. `L\#' stands for lens (\# corresponds to the lens number which can be 1, 2 or 3), `F' for filter, and `D' for detector. The 1 or 2 at the end of each alphanumeric sequence denotes the surface of the optical element that the ray bounced off of. For example, the `L31-F2' ghost was created due to the reflection of rays from the first surface (entrance) of L3 and again from the second surface (exit) of the Filter.
+
+\begin{figure}[h!]
+    \centering
+
+\includegraphics[width=1\textwidth]{figures/2025110500406_individual_ghosts.png}
+    \caption{The ten most commonly occurring ghosts mentioned in Section~\ref{sec:nomenclature} from the stacked simulation in Fig.~\ref{fig:optical_ghosts}. Each ghost is labelled by the pair of optical elements that the ray reflected off of, the fraction of stellar flux that contributed to the ghost and the x and y diameter.} 
+    \label{fig:optical_ghosts_individual}
+\end{figure}
+
+
+The ten most commonly occurring ghosts are: F2-F1, L32-F1, L32-F2, L31-F1, L31-F2, L32-L31, D-F1, D-F2, D-L31, D-L32. The F2-F1 ghost is the smallest and most stable with respect to position the focal-plane, while the D-F1 \& D-F2 ghosts are the biggest and have the largest changes in ellipticity as the star moves off-axis.
+
+Figure~\ref{fig:optical_ghosts_individual} shows an example LSSTCam visit with optical ghosts from Alpha Cen, along with a few of the simulated ghosts labeled by the optical elements responsible for creating them, their size, and the fraction of stellar flux that contributes to them. 
+
+
+\subsection{Measuring the Impacted Area}
+To measure the impacted area as defined by our interpretation of the system requirement, we first generate individual ghost models using the algorithm in Section~\ref{sec:sims}. For each individual ghost, the ghost area (in pixels) and the total ghost flux (in counts) is calculated per detector. The surface brightness of the ghost ($S_i$) is then calculated by dividing the total ghost flux per detector ($f_{tot,i}$) by the ghost area per detector ($A_i$), in units of counts per pixel as shown in Eq.~\ref{eq:surface_brightness}. Here, {\it i} labels the detector number.  
+\begin{equation}
+\label{eq:surface_brightness}
+    S_i = \frac{f_{tot,i}}{A_i}
+\end{equation}
+
+The median measured sky noise per detector is queried for the visit through the LSSTCam ConsDB \citep{DMTN-227}. We calculate the ratio of the ghost surface brightness to the sky noise. If this ratio exceeds 1/3, the ghost area is marked as ``impacted''. Repeating this process for each ghost and accounting for ghost overlap gives us the final area of the focal plane that is impacted by ghosts. Figure~\ref{fig:impacting_ghosts} shows the area impacted by ghosts measured for visit 2025110500406. The impacted area is 1.19 sq. deg., which is 9.65\% of the total focal plane area.
+\begin{figure}[h]
+    \centering
+
+\includegraphics[width=0.5\textwidth]{figures/2025110500406_impacting_ghosts.png}
+    \caption{Area of the focal plane marked as impacted by optical ghosts in green for LSSTCam visit 2025110500406. For this particular visit, we find the area significantly impacted by ghosts to be 9.65\% of the total focal plane area.} 
+    \label{fig:impacting_ghosts}
+\end{figure}
+
+
+\subsubsection{Impacted Area Statistics}
+
+\begin{figure}[h!]
+    \centering
+\includegraphics[width=0.5\textwidth]{figures/ghost_impact_drp.png}
+    \caption{Area of the focal plane impacted by ghosts separated by band in the w37 DRP (cyan) and in a set of highly-ghosted visits in all bands except {\it y} (magenta). The impacted area in the DRP is 0.57\% when averaged across all bands. The highest contribution is from {\it u} and the lowest from {\it i}.} 
+    \label{fig:drp_ghost_stats}
+\end{figure}
+
+We run the pipeline on two datasets to produce an estimate for the ``usual" case and ``worst" case ghost-impacted area. We used the weekly 37 intermittent DRP as the ``usual'' scenario to represent the LSST wide-fast-deep survey. The DRP covers a $30^\circ \times 20^\circ$ region with a centroid RA, Dec.\ $\sim (311.45^\circ, -18.43^\circ)$. We ran the pipeline above to measure the ghost-impacted area of the focal plane on $\sim$3100 visits in the DRP. For the ``worst'' case estimate, we ran our pipeline on 20 visits in each band (except {\it y}, for which 20 visits with severe ghosting could not be identified) that were selected visually to contain large amounts of ghosting. Figure~\ref{fig:drp_ghost_stats} shows that the ghost-impacted area in the DRP averaged over all bands and visits is 0.57\%. When separated by band, the average impacted area in {\it u} is the highest at $\sim8\%$ and smallest in {\it r} ($\sim$0.2\%) and {\it i} ($<$0.1\%). The anomalously high value in {\it u} is likely due to the lower sky background in the {\it u} band.
+Table~\ref{tab:impacted_area} shows the total impacted area and surveyed area in each band in the w37 intermittent DRP. 
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{lcc}
+        \hline
+        Band & Impacted Area [deg$^{2}$] & Surveyed Area [deg$^{2}$] \\
+        \hline
+        {\it u} & 68.95 & 2225.91 \\
+        {\it g} & 14.01 & 4897.00 \\
+        {\it r} & 9.94 & 6084.15 \\
+        {\it i} & 4.04 & 9719.80 \\
+        {\it z} & 33.56 & 8668.68 \\
+        {\it y} & 7.96 & 6603.53 \\
+        \hline
+    \end{tabular}
+    \caption{Intermittent DRP (w37) ghost-impacted area and total surveyed sky area separated by band. \label{tab:impacted_area}}
+\end{table}
+
+\begin{figure}[h!]
+    \centering
+\includegraphics[width=0.9\linewidth]{figures/ghost_impact_sim.png}
+    \caption{(Left) Fraction of the focal plane impacted by optical ghosts as a function of star magnitude for a single on-axis simulated star. (Right) The r-band impacted area as a function of star magnitude for different off-axis positions of the simulated star.} 
+    \label{fig:drp_ghost_impact_sim}
+\end{figure}
+
+We also simulate a single star with different magnitudes at various off-axis positions on the focal plane to plot the impacted area as a function of star magnitude in Fig.~\ref{fig:drp_ghost_impact_sim}. The left panel shows the impacted area as a function of the magnitude of an on-axis bright star separated by band, and the right panel shows the weak dependence of the impacted area on the star's offset angle relative to the boresight. 
+
+
+We use the left panel from Fig.\ref{fig:drp_ghost_impact_sim} as a look-up table to generate a sky map of the impacted area from all the stars in the Yale Bright Star catalog, assuming that each star was observed on-axis. We use the nominal zeropoints and dark sky counts from  \cite{SMTN-002} to calculate the sky noise in each band. We also assume that the exposure times for each band were 30\,s. These maps for each band are shown in Fig.~\ref{fig:drp_ghost_sky_maps}. 
+
+Note that in these maps, the impacted area from each bright star within the same pixel is simply added. This leads to a slight over-counting of the impacted area, as stars that are close to each other can produce overlapping ghosts, changing the total impacted area of the two stars from a simple sum to a union of the individual impacted areas.
+\begin{figure}[h]
+    \centering
+\includegraphics[width=1\textwidth]{figures/ghost_sky_maps.png}
+    \caption{Sky maps showing the fraction of ghost-impacted area in each pixel from the stars in the Yale Bright Star Catalog, separated by band using the simulations in Fig.~\ref{fig:drp_ghost_impact_sim}.} 
+    \label{fig:drp_ghost_sky_maps}
+\end{figure}

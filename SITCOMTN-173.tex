@@ -38,9 +38,10 @@
 
 \setDocAbstract{%
 Optical ghosts are image artifacts caused by successive reflections of light between optical surfaces such as lenses, filters, and detectors. 
-    These artifacts are unavoidable due to the nonzero reflectances of optical elements and are a major source of contamination for low-surface-brightness science. 
-    We use optical ray tracing simulations tuned to observations from LSST Commissioning to quantify the impact of optical ghosts on the LSST data. 
-    In particular, we find that ${\sim} 0.57\%$ of the LSSTCam focal plane is impacted by optical ghosts when averaged across all bands.
+These artifacts are unavoidable due to the nonzero reflectances of optical elements and are a major source of contamination for low-surface-brightness science. 
+We use optical ray tracing simulations tuned to observations from LSST Commissioning to quantify the impact of optical ghosts on the LSST data. 
+In particular, we find that ${\sim}$ 0.57\% of the LSSTCam focal plane is impacted by optical ghosts when averaged across all bands.
+We also use data from the Collimated Beam Projector to measure the reflectances of various optical elements, generally confirming estimates of $\sim$2\% from the system throughputs predictions.
 }
 
 % Change history defined here.
@@ -48,7 +49,8 @@ Optical ghosts are image artifacts caused by successive reflections of light bet
 % Fields: VERSION, DATE, DESCRIPTION, OWNER NAME.
 % See LPM-51 for version number policy.
 \setDocChangeRecord{%
-  \addtohist{1}{YYYY-MM-DD}{Unreleased.}{Pai}
+  \addtohist{1}{2026-03-05}{Added Sections \ref{sec:intro} and \ref{sec:ghost_impact}}{Aashay Pai}
+  \addtohist{2}{2026-04-24}{Added Sections \ref{sec:reflectances}, \ref{sec:conclusions} and Appendix \ref{app:reflectance_hists}}{Aashay Pai}
 }
 
 
@@ -62,7 +64,8 @@ Optical ghosts are image artifacts caused by successive reflections of light bet
 % ADD CONTENT HERE
 % You can also use the \input command to include several content files.
 \input{introduction.tex}
-\input{methods.tex}
+\input{ghost_impact.tex}
+\input{reflectances.tex}
 \input{conclusions.tex}
 
 \appendix
@@ -71,6 +74,9 @@ Optical ghosts are image artifacts caused by successive reflections of light bet
 
 This material is based upon work supported in part by the National Science Foundation through Cooperative Agreements AST-1258333 and AST-2241526 and Cooperative Support Agreements AST-1202910 and AST-2211468 managed by the Association of Universities for Research in Astronomy (AURA), and the Department of Energy under Contract No.\ DE-AC02-76SF00515 with the SLAC National Accelerator Laboratory managed by Stanford University.
 Additional Rubin Observatory funding comes from private donations, grants to universities, and in-kind support from LSST-DA Institutional Members.
+
+Support for AP and ADW was provided by NSF awards AST-2006340 and AST-2307126.
+Fermilab is managed by FermiForward Discovery Group, LLC under Contract No.\ 89243024CSC000002 with the U.S. Department of Energy, Office of Science, Office of High Energy Physics. The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes.
 
 % Include all the relevant bib files.
 % https://lsst-texmf.lsst.io/lsstdoc.html#bibliographies
@@ -83,7 +89,8 @@ Additional Rubin Observatory funding comes from private donations, grants to uni
 \input{acronyms.tex}
 % If you want glossary uncomment below -- comment out the two lines above
 %\printglossaries
-
+\clearpage
+\input{appendix.tex}
 
 
 
