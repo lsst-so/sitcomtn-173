@@ -1,4 +1,5 @@
-\section{Measuring Reflectances of Optical Elements \label{sec:reflectances}}
+\section{Measuring Reflectances of Optical Elements} 
+\label{sec:reflectances}
 In this section, we describe the procedure used to measure the reflectances of the LSSTCam optical elements (i.e., Detector, Filter, L1, L2, L3) using the strength of optical ghosts produced in test data collected with the Collimated Beam Projector (CBP) \citep{2016SPIE.9906E..0OI}. 
 This serves as a verification of the reflectances used in the \texttt{Batoid} simulations in the previous sections, which in turn also validates the reflectances used in systems engineering simulations.
 
@@ -6,7 +7,7 @@ This serves as a verification of the reflectances used in the \texttt{Batoid} si
 \label{sec:reflectance_theory}
 To form a first-order ghost, a ray of light must be reflected successively by two optical elements (higher-order ghosts also exist, but are highly suppressed, as they require four or more successive reflections).
 The probability that a ray contributes to the flux of the ghost is $P_{AB} = R_A R_B$, where $R_A$ and $R_B$ are the reflectances of the optical elements A and B, respectively.
-The flux of an optical ghost can therefore be related to the flux of the source through $P_{AB}$, as shown in Eq.~\ref{eq:ghost_flux_prob}, where $f_{A-B}$ is the flux of the ghost and $f_{\rm src}$ is the total incident flux of the astronomical source (i.e., bright star).
+The flux of an optical ghost can therefore be related to the flux of the source through $P_{AB}$, as shown in Eq.~\ref{eq:ghost_flux_prob}, where $f_{A, B}$ is the flux of the ghost and $f_{\rm src}$ is the total incident flux of the astronomical source (i.e., bright star).
 
 \begin{equation}
 \label{eq:ghost_flux_prob}
@@ -16,7 +17,7 @@ f_{A,B} = R_A R_B f_{\rm src}
 \noindent Measurements of $f_{A,B}$ and $f_{\rm src}$ allow a determination of the combined reflectances of the optical elements involved in the production of the ghost.
 
 Considering all ghosts produced by different combinations of optical elements leads to a set of coupled equations.
-A subset of these equations, limited to ghosts arising from a reflection off of of a filter surface (F1 or F2) and either the  Detectors (D) or a surface of Lens 3 (L31 or L32), is shown in Eq.~\ref{eq:coupled_eqs}.
+A subset of these equations, limited to ghosts arising from a reflection off of a filter surface (F1 or F2) and either the  Detectors (D) or a surface of Lens 3 (L31 or L32), is shown in Eq.~\ref{eq:coupled_eqs}.
 
 \begin{equation}
 \label{eq:coupled_eqs}
@@ -68,13 +69,17 @@ b_{L_{32} , F_2} \\
 \subsubsection{Data}
 \begin{figure}[h!]
     \centering
-\includegraphics[width=0.2\textwidth]{figures/CBP_dome_front.png}
+\includegraphics[width=0.2\textwidth]
+{figures/CBP_dome_front.png}
     \caption{An image of the Collimated Beam Projector (CBP) from \cite{SITCOMTN-152}.} 
     \label{fig:cbp}
 \end{figure}
 
 The Collimated Beam Projector (CBP) is a repurposed 30\,cm Schmidt telescope that has been fitted with a laser and mounted to the Rubin dome. It is located approximately 12.5\,m from the Telescope Mount Assembly (TMA) at a height of approximately 14\,m.
-The CBP projects a collimated laser beam onto the primary mirror (M1), which acts as a point source, thereby allowing us to effectively simulate a star from within the dome.
+The CBP projects a
+monochromatic point-like source in a parallel beam onto the primary mirror (M1), thereby allowing to produce an artificial
+light source mimicking the behaviour of a star.
+Note that the CBP doesn't illuminate the entirety of M1 as a star would, changing the morphology of the observed ghosts.
 
 \begin{figure}[h!]
   \centering
