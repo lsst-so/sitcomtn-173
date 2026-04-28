@@ -32,10 +32,11 @@ In this section we describe the use of the \texttt{Batoid} Python package \citep
 \end{figure}
 \subsubsection{Pipeline \label{sec:pipeline}}
 Figure~\ref{fig:ghost_model_flowchart} shows a flowchart of the pipeline used to generate morphology, flux, and surface brightnesses of ghosts. 
-The optical reflectances of the filters and lenses in the simulation were set to the values produced by the systems engineering simulations\footnote{\url{https://github.com/lsst-pst/syseng_throughputs/blob/main/notebooks/Components.ipynb}}. The bright stars were initialized into the simulation using the \texttt{preliminary\_visit\_image.wcs} object. The rays were then propagated through the full optical model. The flux of each ghost was converted from arbitrary flux units in \texttt{Batoid} to instrumental flux using Eq.~\ref{eq:batoid_flux_to_instflux}, where $f_i$ is the instrumental flux of a particular ghost, $\phi_{tot}$ is the total flux of all ghosts in arbitrary flux units, $\phi_\star$ is the flux of the star in arbitrary flux units and $f_\star$ is the instrumental flux of the star. $f_\star$ is calculated by converting the magnitude of the star in the LSST band to instrumental fluxes using the \texttt{preliminary\_visit\_image.photoCalib} object. 
+The optical reflectances of the filters and lenses in the simulation were set to the values produced by the systems engineering simulations\footnote{\url{https://github.com/lsst-pst/syseng_throughputs/blob/main/notebooks/Components.ipynb}}. The bright stars were initialized into the simulation using the \texttt{preliminary\_visit\_image.wcs} object. The rays were then propagated through the full optical model. The flux of each ghost was converted from arbitrary flux units in \texttt{Batoid} to instrumental flux using Eq.~\ref{eq:batoid_flux_to_instflux}, where $f_i$ is the instrumental flux of a particular ghost, 
+$\phi_i$ is the flux of a particular ghost in arbitrary flux units, $\phi_{tot}$ is the total flux of all ghosts in arbitrary flux units, $\phi_{\rm src}$ is the flux of the star in arbitrary flux units and $f_{\rm src}$ is the instrumental flux of the star. $f_{\rm src}$ is calculated by converting the magnitude of the star in the LSST band to instrumental fluxes using the \texttt{preliminary\_visit\_image.photoCalib} object. 
 \begin{equation}
 \label{eq:batoid_flux_to_instflux}
-    f_{i} = \frac{\phi_i}{\phi_{tot}+\phi_\star} f_\star
+    f_{i} = \frac{\phi_i}{\phi_{tot}+\phi_{\rm src}} f_{\rm src}
 \end{equation}
 Figure~\ref{fig:stacked_ghosts} shows the stacked optical ghosts produced by the simulation for visit 2025110500406.
 
@@ -66,10 +67,10 @@ Figure~\ref{fig:optical_ghosts_individual} shows an example LSSTCam visit with o
 
 
 \subsection{Measuring the Impacted Area}
-To measure the impacted area as defined by our interpretation of the system requirement, we first generate individual ghost models using the algorithm in Section~\ref{sec:sims}. For each individual ghost, the ghost area (in pixels) and the total ghost flux (in counts) is calculated per detector. The surface brightness of the ghost ($S_i$) is then calculated by dividing the total ghost flux per detector ($f_{tot,i}$) by the ghost area per detector ($A_i$), in units of counts per pixel as shown in Eq.~\ref{eq:surface_brightness}. Here, {\it i} labels the detector number.  
+To measure the impacted area as defined by our interpretation of the system requirement, we first generate individual ghost models using the algorithm in Section~\ref{sec:sims}. For each individual ghost, the ghost area (in pixels) and the total ghost flux (in counts) is calculated per detector. The surface brightness of the ghost ($S_n$) is then calculated by dividing the total ghost flux per detector ($f_{tot,n}$) by the ghost area per detector ($A_n$), in units of counts per pixel as shown in Eq.~\ref{eq:surface_brightness}. Here, {\it n} labels the detector number.  
 \begin{equation}
 \label{eq:surface_brightness}
-    S_i = \frac{f_{tot,i}}{A_i}
+    S_n = \frac{f_{tot,n}}{A_n}
 \end{equation}
 
 The median measured sky noise per detector is queried for the visit through the LSSTCam ConsDB \citep{DMTN-227}. We calculate the ratio of the ghost surface brightness to the sky noise. If this ratio exceeds 1/3, the ghost area is marked as ``impacted''. Repeating this process for each ghost and accounting for ghost overlap gives us the final area of the focal plane that is impacted by ghosts. Figure~\ref{fig:impacting_ghosts} shows the area impacted by ghosts measured for visit 2025110500406. The impacted area is 1.19 sq. deg., which is 9.65\% of the total focal plane area.
@@ -87,11 +88,11 @@ The median measured sky noise per detector is queried for the visit through the 
 \begin{figure}[h!]
     \centering
 \includegraphics[width=0.5\textwidth]{figures/ghost_impact_drp.png}
-    \caption{Area of the focal plane impacted by ghosts separated by band in the w37 DRP (cyan) and in a set of highly-ghosted visits in all bands except {\it y} (magenta). The impacted area in the DRP is 0.57\% when averaged across all bands. The highest contribution is from {\it u} and the lowest from {\it i}.} 
+    \caption{The usual case area of the focal plane impacted by ghosts separated by band in the w37 DRP (cyan) and in a set of highly-ghosted visits (worst case) in all bands except {\it y} (magenta). The impacted area in the DRP is 0.57\% when averaged across all bands. The highest contribution is from {\it u} and the lowest from {\it i}.} 
     \label{fig:drp_ghost_stats}
 \end{figure}
 
-We run the pipeline on two datasets to produce an estimate for the ``usual" case and ``worst" case ghost-impacted area. We used the weekly 37 intermittent DRP as the ``usual'' scenario to represent the LSST wide-fast-deep survey. The DRP covers a $30^\circ \times 20^\circ$ region with a centroid RA, Dec.\ $\sim (311.45^\circ, -18.43^\circ)$. We ran the pipeline above to measure the ghost-impacted area of the focal plane on $\sim$3100 visits in the DRP. For the ``worst'' case estimate, we ran our pipeline on 20 visits in each band (except {\it y}, for which 20 visits with severe ghosting could not be identified) that were selected visually to contain large amounts of ghosting. Figure~\ref{fig:drp_ghost_stats} shows that the ghost-impacted area in the DRP averaged over all bands and visits is 0.57\%. When separated by band, the average impacted area in {\it u} is the highest at $\sim8\%$ and smallest in {\it r} ($\sim$0.2\%) and {\it i} ($<$0.1\%). The anomalously high value in {\it u} is likely due to the lower sky background in the {\it u} band.
+We run the pipeline on two datasets to produce an estimate for the ``usual" case and ``worst" case ghost-impacted area. We used the weekly 37 intermittent Data Release Production (DRP) data as the ``usual'' scenario to represent the LSST wide-fast-deep survey. The DRP covers a $30^\circ \times 20^\circ$ region with a centroid RA, Dec.\ $\sim (311.45^\circ, -18.43^\circ)$. We ran the pipeline above to measure the ghost-impacted area of the focal plane on $\sim$ 3100 visits in the DRP. For the ``worst'' case estimate, we ran our pipeline on 20 visits in each band (except {\it y}, for which 20 visits with severe ghosting could not be identified) that were selected visually to contain large amounts of ghosting. Figure~\ref{fig:drp_ghost_stats} shows that the ghost-impacted area in the DRP averaged over all bands and visits is 0.57\%. When separated by band, the average impacted area in {\it u} is the highest at $\sim$ 8\% and smallest in {\it r} ($\sim$ 0.2\%) and {\it i} ($<$0.1\%). The anomalously high value in {\it u} is likely due to the lower sky background in the {\it u} band.
 Table~\ref{tab:impacted_area} shows the total impacted area and surveyed area in each band in the w37 intermittent DRP. 
 \begin{table}[h!]
     \centering
@@ -107,7 +108,7 @@ Table~\ref{tab:impacted_area} shows the total impacted area and surveyed area in
         {\it y} & 7.96 & 6603.53 \\
         \hline
     \end{tabular}
-    \caption{Intermittent DRP (w37) ghost-impacted area and total surveyed sky area separated by band. \label{tab:impacted_area}}
+    \caption{Intermittent DRP (w37) usual case ghost-impacted area and total surveyed sky area separated by band. \label{tab:impacted_area}}
 \end{table}
 
 \begin{figure}[h!]
