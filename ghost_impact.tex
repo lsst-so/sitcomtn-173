@@ -38,12 +38,12 @@ $\phi_i$ is the flux of a particular ghost in arbitrary flux units, $\phi_{tot}$
 \label{eq:batoid_flux_to_instflux}
     f_{i} = \frac{\phi_i}{\phi_{tot}+\phi_{\rm src}} f_{\rm src}
 \end{equation}
-Figure~\ref{fig:stacked_ghosts} shows the stacked optical ghosts produced by the simulation for visit 2025110500406.
+Figure~\ref{fig:stacked_ghosts} shows the stacked optical ghosts produced by the simulation for visit 2026011500325.
 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/2025110500406_ghosts.png}
+    \includegraphics[width=0.5\textwidth]{figures/2026011500325_ghosts.png}
     \caption{Stacked simulated ghosts produced by a \texttt{Batoid} simulation using the procedure delineated in Section~\ref{sec:pipeline}.} 
     \label{fig:stacked_ghosts}
 \end{figure}
@@ -55,7 +55,7 @@ In this technote, ghosts are labeled by the two optical elements that created th
 \begin{figure}[h!]
     \centering
 
-\includegraphics[width=1\textwidth]{figures/2025110500406_individual_ghosts.png}
+\includegraphics[width=1\textwidth]{figures/2026011500325_individual_ghosts.png}
     \caption{The ten most commonly occurring ghosts mentioned in Section~\ref{sec:nomenclature} from the stacked simulation in Fig.~\ref{fig:optical_ghosts}. Each ghost is labelled by the pair of optical elements that the ray reflected off of, the fraction of stellar flux that contributed to the ghost and the x and y diameter.} 
     \label{fig:optical_ghosts_individual}
 \end{figure}
@@ -73,12 +73,12 @@ To measure the impacted area as defined by our interpretation of the system requ
     S_n = \frac{f_{tot,n}}{A_n}
 \end{equation}
 
-The median measured sky noise per detector is queried for the visit through the LSSTCam ConsDB \citep{DMTN-227}. We calculate the ratio of the ghost surface brightness to the sky noise. If this ratio exceeds 1/3, the ghost area is marked as ``impacted''. Repeating this process for each ghost and accounting for ghost overlap gives us the final area of the focal plane that is impacted by ghosts. Figure~\ref{fig:impacting_ghosts} shows the area impacted by ghosts measured for visit 2025110500406. The impacted area is 1.19 sq. deg., which is 9.65\% of the total focal plane area.
+The median measured sky noise per detector is queried for the visit through the LSSTCam ConsDB \citep{DMTN-227}. We calculate the ratio of the ghost surface brightness to the sky noise. If this ratio exceeds 1/3, the ghost area is marked as ``impacted''. Repeating this process for each ghost and accounting for ghost overlap gives us the final area of the focal plane that is impacted by ghosts. Figure~\ref{fig:impacting_ghosts} shows the area impacted by ghosts measured for visit 2026011500325. The impacted area is 7.01 sq. deg., which is 56.74\% of the total focal plane area.
 \begin{figure}[h]
     \centering
 
-\includegraphics[width=0.5\textwidth]{figures/2025110500406_impacting_ghosts.png}
-    \caption{Area of the focal plane marked as impacted by optical ghosts in green for LSSTCam visit 2025110500406. For this particular visit, we find the area significantly impacted by ghosts to be 9.65\% of the total focal plane area.} 
+\includegraphics[width=0.5\textwidth]{figures/2026011500325_impacting_ghosts.png}
+    \caption{Area of the focal plane marked as impacted by optical ghosts in green for LSSTCam visit 2026011500325. For this particular visit, we find the area significantly impacted by ghosts to be 56.74\% of the total focal plane area.} 
     \label{fig:impacting_ghosts}
 \end{figure}
 
